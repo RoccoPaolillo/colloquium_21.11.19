@@ -1,0 +1,114 @@
+---
+output:
+  bookdown::pdf_document2:
+    toc: false
+ #   keep_tex: false
+    fig_caption: yes
+title: "Preferences interact: what consequences for a Schelling scenario?"
+# subtitle: "Target: BIGSSS Research Day"
+author:  Rocco Paolillo, Andreas Flache, Jan Lorenz
+date:  "`r  as.Date(Sys.time(), '%d %B %Y')`"
+# "`r  as.Date(Sys.time(), '%d %B %Y')`"
+language: en-GB
+# bibliography: "references.bib"
+always_allow_html: yes
+header-includes:
+- \usepackage{float}
+- \usepackage{multirow}
+- \usepackage{xcolor} 
+- \usepackage{amsmath}
+- \usepackage{graphicx}
+
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.lp="fig:",warning = FALSE)
+
+# install.packages("tinytex", repos = "https://cloud.r-project.org" )
+
+
+
+library(tidyverse)
+library(ggplot2)
+library(gridExtra)
+library(tidyr)
+library(plyr)
+library(dplyr)
+# 
+# 
+# eq_10 <- read.csv("50_g_10_bh.csv",sep = ",",skip = 6)
+# names(eq_10) <- pull(read_csv("code_names.csv"))
+# 
+# mj_10 <- read.csv("80_g_10_bh.csv",sep = ",",skip = 6)
+# names(mj_10) <- pull(read_csv("code_names.csv"))
+# 
+# eq_30 <- read.csv("50_g_30_hb.csv", sep = ",", skip = 6)
+# names(eq_30) <- pull(read_csv("code_names.csv"))
+# 
+# mj_30 <- read.csv("80_g_30_bh.csv",sep = ",",skip = 6)
+# names(mj_30) <- pull(read_csv("code_names.csv"))
+# 
+# raw_f <- rbind(eq_30,eq_10,mj_30,mj_10)
+# 
+# 
+# df_e_sqr <- raw_f$e_sqr - raw_f$v_sqr
+# df_v_crl <-  raw_f$v_crl - raw_f$e_crl
+# 
+# dataset <- cbind(raw_f,df_e_sqr,df_v_crl)
+# 
+# # check <- final[,c(9,10,27,11,12,28)]
+# 
+# write.csv(dataset, file = "dataset.csv",row.names=FALSE) # later for reproduction
+# 
+# 
+# 
+#  f_spk <- function(i_e,x,n){      # utility function as single-peaked
+#   if (x > n){
+#     U <- NA}else{
+#     if (x < (n*i_e)){
+#   U <- (x / (n*i_e))
+#      }else if (x > (n*i_e)){
+#         U <- i_e + (((1- (x/n))*(1-i_e))/(1-i_e))
+#        }else{
+#     U <- 1}
+#        round(U,digits = 3)
+#      }
+# }
+# 
+#  f_thr <- function(i_e,x,n){  # to plot threshold function
+#   if (x >= (n*i_e)){
+#     U <- 1}else{
+#    U <- 0 }
+#  }
+#  
+# 
+#    
+# 
+#  # install.packages("tinytex", repos = "https://cloud.r-project.org" ) #, try if debug needed
+# 
+#  
+ 
+```
+
+
+\abstract{}
+
+
+# Introduction {-}
+
+Bla balal abaab
+
+* adidisnc
+
+* bpisisjdfid
+
+# Model and Experiments
+
+
+
+
+# Results
+
+
+# References
