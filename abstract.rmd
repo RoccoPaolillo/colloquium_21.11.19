@@ -1,0 +1,24 @@
+---
+output:
+  bookdown::word_document2:
+    toc: false
+ #   keep_tex: false
+    fig_caption: yes
+title: "Colloquium 21.11.19"
+author:  Rocco Paolillo
+date:  "`r  as.Date(Sys.time(), '%d %B %Y')`"
+# "`r  as.Date(Sys.time(), '%d %B %Y')`"
+language: en-GB
+bibliography: "references.bib"
+always_allow_html: yes
+header-includes:
+- \usepackage{float}
+- \usepackage{multirow}
+- \usepackage{xcolor} 
+- \usepackage{amsmath}
+- \usepackage{graphicx}
+
+
+---
+
+Residential Segregation, different preferences
