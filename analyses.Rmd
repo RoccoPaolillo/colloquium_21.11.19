@@ -1,0 +1,208 @@
+---
+title: "Analyses Colloquium 21_11_2019 RP"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(car)
+library(tidyverse)
+library(Hmisc)
+library(ggplot2)
+library(gridExtra)
+library(dplyr)
+library(grid)
+library(ggrepel)
+library(magicfor)
+library(magick)
+library(magrittr)
+library(cowplot)
+library(dplyr)
+library(ggpubr)
+library(reshape2)
+# library(plot3D)
+#library(rgl)
+#library(plotly)
+library(tidyr)
+library(plyr)
+library(graphics)
+#library(magick) 
+library(xtable)
+
+
+## TEST only ß_ie (data collected from rum_eth.nlogo)
+a <- read.csv("rum_eth.csv",sep = ",",skip = 6)
+names(a)[names(a) == "mean..count..turtles.on.neighbors..with..ethnicity....ethnicity..of.myself....count..turtles.on.neighbors....of.turtles.with..count..turtles.on.neighbors.....1." ] <- "eth_seg"
+
+a %>% filter(ticks == 0  | ticks == 500  | ticks == 100 | ticks == 1000)  %>%  filter(beta.ie >= 0 & beta.ie <= 15) %>% ggplot(aes(x = beta.ie, y = eth_seg)) + geom_bar(stat="identity") + facet_wrap(~ ticks, labeller = label_both) + xlab("ß ethnic") + ylab("ethnic segregation")
+
+
+## TEST ß_ie and ß_iv (data collected from rum_eth-val.nlogo)
+b  <-  read.csv("rum_eth-val.csv",sep = ",",skip = 6)
+names(b)[names(b) == "mean..count..turtles.on.neighbors..with..ethnicity....ethnicity..of.myself....count..turtles.on.neighbors...of.turtles.with..count..turtles.on.neighbors.....1." ] <- "eth_seg"
+names(b)[names(b) == "mean..count..turtles.on.neighbors..with..shape....shape..of.myself....count..turtles.on.neighbors...of.turtles.with..count..turtles.on.neighbors.....1."] <- "val_seg"
+
+b %>% filter(beta.ie >= beta.iv, ticks == 1000 )  %>%  ggplot(aes(x = beta.iv, y = eth_seg)) + geom_bar(stat = "identity") + facet_wrap(~  beta.ie, labeller = label_both) + xlab("ß value") + ylab("ethnic segregation")
+
+b %>% filter(beta.ie >= beta.iv, ticks == 1000 )  %>%  ggplot(aes(x = beta.iv, y = val_seg)) + geom_bar(stat = "identity") + facet_wrap(~  beta.ie, labeller = label_both) + xlab("ß value") + ylab("value segregation")
+
+
+## Final database used for observations reported (data collected from ev_rum_shape.nlogo)
+
+mj <- read.csv("80_20.csv",sep = ",",skip = 6)
+eq <- read.csv("50_50.csv",sep = ",",skip = 6)
+df <- rbind(mj,eq)
+names(df) <- pull(read_csv("code.csv"))
+
+# str(df$ticks)
+
+
+```
+
+```{r heatmap, include = FALSE}
+
+df %>% filter(fraction_blue == 50, ticks == 2000, v_crl == 1) %>%  ggplot(aes(x = e_sqr, y = v_sqr, fill =  eth_seg_loc_sqr)) + geom_tile() + facet_wrap(~ e_crl) +
+ coord_fixed(0.6)  + 
+ # geom_text(aes(label = round(Fraction,2))) +
+ scale_fill_distiller(palette = "RdBu", limits=c(0,1), breaks=c(0,0.2,0.5,0.8,1), 
+ 		guide=guide_colorbar(barwidth = 10, barheight = 0.5, label.position = "top")) + 
+ ggtitle("Ethnic Segregation") +
+	 scale_x_continuous(breaks=seq(0,10, by = 1)) +
+ scale_y_continuous(breaks=seq(0,10, by = 1)) + 
+ 	theme_bw() + theme( strip.text.x = element_text(margin = margin(4, 4, 4,4)),
+ 	  legend.position = "top", panel.grid.minor.x = element_blank(), legend.title=element_blank(),  panel.spacing = unit(0.5, "lines"), legend.margin=margin(0,0,0,0), plot.title = element_text(hjust = 0.5)) 
+  
+  
+df %>% filter(fraction_blue == 50, ticks == 2000, v_crl == 3) %>%  ggplot(aes(x = e_sqr, y = v_sqr, fill =  val_seg_loc_sqr)) + geom_tile() + facet_wrap(~ e_crl) +
+ coord_fixed(0.6)  + 
+ # geom_text(aes(label = round(Fraction,2))) +
+ scale_fill_distiller(palette = "RdBu", limits=c(0,1), breaks=c(0,0.2,0.5,0.8,1), 
+ 		guide=guide_colorbar(barwidth = 10, barheight = 0.5, label.position = "top")) + 
+ ggtitle("Value Segregation") +
+	 scale_x_continuous(breaks=seq(0,10, by = 1)) +
+ scale_y_continuous(breaks=seq(0,10, by = 1)) + 
+ 	theme_bw() + theme( strip.text.x = element_text(margin = margin(4, 4, 4,4)),
+ 	  legend.position = "top", panel.grid.minor.x = element_blank(), legend.title=element_blank(),  panel.spacing = unit(0.5, "lines"), legend.margin=margin(0,0,0,0), plot.title = element_text(hjust = 0.5)) 
+
+df %>% filter(fraction_blue == 50, ticks == 2000, v_crl == 3) %>%  ggplot(aes(x = e_sqr, y = v_sqr, fill =  eth_seg_loc_sqr)) + geom_tile() + facet_wrap(~ e_crl) +
+ coord_fixed(0.6)  + 
+ # geom_text(aes(label = round(Fraction,2))) +
+ scale_fill_distiller(palette = "RdBu", limits=c(0,1), breaks=c(0,0.2,0.5,0.8,1), 
+ 		guide=guide_colorbar(barwidth = 10, barheight = 0.5, label.position = "top")) + 
+ ggtitle("Ethnic Segregation") +
+	 scale_x_continuous(breaks=seq(0,10, by = 1)) +
+ scale_y_continuous(breaks=seq(0,10, by = 1)) + 
+ 	theme_bw() + theme( strip.text.x = element_text(margin = margin(4, 4, 4,4)),
+ 	  legend.position = "top", panel.grid.minor.x = element_blank(), legend.title=element_blank(),  panel.spacing = unit(0.5, "lines"), legend.margin=margin(0,0,0,0), plot.title = element_text(hjust = 0.5)) 
+  
+  
+df %>% filter(fraction_blue == 80, ticks == 2000, v_crl == 3) %>%  ggplot(aes(x = e_sqr, y = v_sqr, fill =  eth_seg_min_sqr)) + geom_tile() + facet_wrap(~ e_crl) +
+ coord_fixed(0.6)  + 
+ # geom_text(aes(label = round(Fraction,2))) +
+ scale_fill_distiller(palette = "RdBu", limits=c(0,1), breaks=c(0,0.2,0.5,0.8,1), 
+ 		guide=guide_colorbar(barwidth = 10, barheight = 0.5, label.position = "top")) + 
+ ggtitle("Ethnic Segregation") +
+	 scale_x_continuous(breaks=seq(0,10, by = 1)) +
+ scale_y_continuous(breaks=seq(0,10, by = 1)) + 
+ 	theme_bw() + theme( strip.text.x = element_text(margin = margin(4, 4, 4,4)),
+ 	  legend.position = "top", panel.grid.minor.x = element_blank(), legend.title=element_blank(),  panel.spacing = unit(0.5, "lines"), legend.margin=margin(0,0,0,0), plot.title = element_text(hjust = 0.5)) 
+
+df %>% filter(fraction_blue == 80, ticks == 2000, v_crl == 3) %>%  ggplot(aes(x = e_sqr, y = v_sqr, fill =  val_seg_min_sqr)) + geom_tile() + facet_wrap(~ e_crl) +
+ coord_fixed(0.6)  + 
+ # geom_text(aes(label = round(Fraction,2))) +
+ scale_fill_distiller(palette = "RdBu", limits=c(0,1), breaks=c(0,0.2,0.5,0.8,1), 
+ 		guide=guide_colorbar(barwidth = 10, barheight = 0.5, label.position = "top")) + 
+ ggtitle("Value Segregation") +
+	 scale_x_continuous(breaks=seq(0,10, by = 1)) +
+ scale_y_continuous(breaks=seq(0,10, by = 1)) + 
+ 	theme_bw() + theme( strip.text.x = element_text(margin = margin(4, 4, 4,4)),
+ 	  legend.position = "top", panel.grid.minor.x = element_blank(), legend.title=element_blank(),  panel.spacing = unit(0.5, "lines"), legend.margin=margin(0,0,0,0), plot.title = element_text(hjust = 0.5)) 
+  
+```
+
+## Including Plots
+
+
+
+```{r lines_square2, echo = FALSE, include=TRUE}
+v_crl.labs <- c("ß value crl = 0", "ß value crl = 1", "ß value crl = 6")
+names(v_crl.labs) <- c("0","1","6")
+
+
+ df %>%  filter(fraction_blue == 80, ticks == 2000, e_sqr == 6) %>% filter(v_crl == 0 | v_crl == 1 | v_crl == 6 ) %>% filter(e_crl == 0) %>%
+
+gather(key = subgroup, value = Fraction, eth_seg_loc_sqr ,eth_seg_min_sqr,val_seg_loc_sqr,val_seg_min_sqr) %>% 
+  mutate(
+    `Segregation` = fct_relevel(fct_collapse(subgroup, `Ethnic Segregation` = c("eth_seg_loc_sqr","eth_seg_min_sqr"), `Value Segregation` = c("val_seg_loc_sqr","val_seg_min_sqr")),"Ethnic Segregation"),
+         `Group` = fct_relevel(fct_collapse(subgroup,`Majority Square` = c("eth_seg_loc_sqr","val_seg_loc_sqr"), `Minority Square` = c("eth_seg_min_sqr","val_seg_min_sqr")),"Majority Square")) %>%
+  
+  ggplot(aes(x = v_sqr,y = Fraction,  color = `Segregation`, linetype = `Group`)) + geom_line(size = 1)  + facet_wrap(~ v_crl , labeller = labeller(v_crl  = v_crl.labs)) + 
+   
+ # scale_x_continuous(limits = c(0,6), breaks=seq(0,6,by = 1))  +
+  scale_y_continuous(limits = c(0,1), breaks=seq(0, 1, by = 0.25)) + 
+  
+  	theme_bw() + theme(legend.position = "bottom",	panel.grid.minor.x = element_blank(),
+		panel.grid.minor.y = element_blank(), legend.margin=margin(0,0,0,0), plot.title = element_text(hjust = 0.5), panel.spacing = unit(1, "lines") ) + ylab("Segregation") + xlab("ß Value Square") + ggtitle(paste0("ß Ethnic Square = 6 "))
+
+
+
+```
+
+
+
+
+
+```{r heatmap2, echo = FALSE, include=TRUE}
+v_crl.labs <- c("ß value crl = 0", "ß value crl = 1", "ß value crl = 6")
+names(v_crl.labs) <- c("0","1","6")
+
+
+ df %>%  filter(fraction_blue == 50, ticks == 2000, e_sqr == 6) %>% filter(v_crl == 0 | v_crl == 1 | v_crl == 6 ) %>% filter(e_crl == 0) %>%
+
+gather(key = subgroup, value = Fraction, eth_seg_loc_sqr ,eth_seg_min_sqr,val_seg_loc_sqr,val_seg_min_sqr) %>% 
+  mutate(
+    `Segregation` = fct_relevel(fct_collapse(subgroup, `Ethnic Segregation` = c("eth_seg_loc_sqr","eth_seg_min_sqr"), `Value Segregation` = c("val_seg_loc_sqr","val_seg_min_sqr")),"Ethnic Segregation"),
+         `Group` = fct_relevel(fct_collapse(subgroup,`Majority Square` = c("eth_seg_loc_sqr","val_seg_loc_sqr"), `Minority Square` = c("eth_seg_min_sqr","val_seg_min_sqr")),"Majority Square")) %>%
+  
+  ggplot(aes(x = v_sqr,y = Fraction,  color = `Segregation`, linetype = `Group`)) + geom_line(size = 1)  + facet_wrap(~ v_crl , labeller = labeller(v_crl  = v_crl.labs)) + 
+   
+ # scale_x_continuous(limits = c(0,6), breaks=seq(0,6,by = 1))  +
+  scale_y_continuous(limits = c(0,1), breaks=seq(0, 1, by = 0.25)) + 
+  
+  	theme_bw() + theme(legend.position = "bottom",	panel.grid.minor.x = element_blank(),
+		panel.grid.minor.y = element_blank(), legend.margin=margin(0,0,0,0), plot.title = element_text(hjust = 0.5), panel.spacing = unit(1, "lines") ) + ylab("Segregation") + xlab("ß Value Square") + ggtitle(paste0("ß Ethnic Square = 6 "))
+
+
+
+```
+
+
+
+
+
+```{r lines_circle2, echo = FALSE, include=TRUE}
+e_sqr.labs <- c("ß ethnic sqr", "ß ethnic sqr = 1", "ß ethnic sqr = 6")
+names(e_sqr.labs) <- c("0","1","6")
+
+
+ df %>%  filter(fraction_blue == 80, ticks == 2000, v_crl == 6) %>% filter(e_sqr == 0 | e_sqr == 1 | e_sqr == 6 ) %>% filter(v_sqr == 0) %>%
+
+gather(key = subgroup, value = Fraction, eth_seg_loc_crl ,eth_seg_min_crl,val_seg_loc_crl,val_seg_min_crl) %>% 
+  mutate(
+    `Segregation` = fct_relevel(fct_collapse(subgroup, `Ethnic Segregation` = c("eth_seg_loc_crl","eth_seg_min_crl"), `Value Segregation` = c("val_seg_loc_crl","val_seg_min_crl")),"Ethnic Segregation"),
+         `Group` = fct_relevel(fct_collapse(subgroup,`Majority Circle` = c("eth_seg_loc_crl","val_seg_loc_crl"), `Minority Circle` = c("eth_seg_min_crl","val_seg_min_crl")),"Majority Circle")) %>%
+  
+  ggplot(aes(x = e_crl,y = Fraction,  color = `Segregation`, linetype = `Group`)) + geom_line(size = 1)  + facet_wrap(~ e_sqr, labeller = labeller(e_sqr  = e_sqr.labs)) + 
+   
+ # scale_x_continuous(limits = c(0,6), breaks=seq(0,6,by = 1))  +
+  scale_y_continuous(limits = c(0,1), breaks=seq(0, 1, by = 0.25)) + 
+  
+  	theme_bw() + theme(legend.position = "bottom",	panel.grid.minor.x = element_blank(),
+		panel.grid.minor.y = element_blank(), legend.margin=margin(0,0,0,0), plot.title = element_text(hjust = 0.5), panel.spacing = unit(1, "lines") ) + ylab("Segregation") + xlab("ß Ethnic Circle") + ggtitle(paste0("ß Value Circle = 6 "))
+
+
+
+```
+
+
